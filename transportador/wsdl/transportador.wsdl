@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="TransportadorService"
+             targetNamespace="http://example.com/transportador"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:tns="http://example.com/transportador"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <!-- 1. Tipos -->
+  <types>
+    <xsd:schema targetNamespace="http://example.com/transportador">
+      <!-- Pedido -->
+      <xsd:complexType name="Pedido">
+        <xsd:sequence>
+          <xsd:element name="numeroPedido"   type="xsd:string"/>
+          <xsd:element name="itens"          type="xsd:string"/> <!-- JSON string, ou repetir elemento -->
+          <xsd:element name="quantidades"    type="xsd:string"/>
+          <xsd:element name="endereco"       type="xsd:string"/>
+          <xsd:element name="destinatario"   type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <!-- Resposta genérica -->
+      <xsd:complexType name="Resposta">
+        <xsd:sequence>
+          <xsd:element name="sucesso"        type="xsd:boolean"/>
+          <xsd:element name="mensagem"       type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <!-- Status da entrega -->
+      <xsd:complexType name="StatusResponse">
+        <xsd:sequence>
+          <xsd:element name="numeroPedido"   type="xsd:string"/>
+          <xsd:element name="status"         type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </types>
+
+  <!-- 2. Mensagens -->
+  <message name="RegistrarPedidoRequest">
+    <part name="pedido" element="tns:Pedido"/>
+  </message>
+  <message name="RegistrarPedidoResponse">
+    <part name="resposta" element="tns:Resposta"/>
+  </message>
+
+  <message name="ConsultarStatusRequest">
+    <part name="numeroPedido" type="xsd:string"/>
+  </message>
+  <message name="ConsultarStatusResponse">
+    <part name="status" element="tns:StatusResponse"/>
+  </message>
+
+  <message name="AtualizarStatusRequest">
+    <part name="numeroPedido" type="xsd:string"/>
+    <part name="novoStatus"   type="xsd:string"/>
+  </message>
+  <message name="AtualizarStatusResponse">
+    <part name="resposta" element="tns:Resposta"/>
+  </message>
+
+  <!-- 3. PortType -->
+  <portType name="TransportadorPortType">
+    <operation name="RegistrarPedido">
+      <input  message="tns:RegistrarPedidoRequest"/>
+      <output message="tns:RegistrarPedidoResponse"/>
+    </operation>
+    <operation name="ConsultarStatus">
+      <input  message="tns:ConsultarStatusRequest"/>
+      <output message="tns:ConsultarStatusResponse"/>
+    </operation>
+    <operation name="AtualizarStatus">
+      <input  message="tns:AtualizarStatusRequest"/>
+      <output message="tns:AtualizarStatusResponse"/>
+    </operation>
+  </portType>
+
+  <!-- 4. Binding -->
+  <binding name="TransportadorSoapBinding" type="tns:TransportadorPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="RegistrarPedido">
+      <soap:operation soapAction="http://example.com/transportador/RegistrarPedido"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="ConsultarStatus">
+      <soap:operation soapAction="http://example.com/transportador/ConsultarStatus"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="AtualizarStatus">
+      <soap:operation soapAction="http://example.com/transportador/AtualizarStatus"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+
+  <!-- 5. Service -->
+  <service name="TransportadorService">
+    <port name="TransportadorPort" binding="tns:TransportadorSoapBinding">
+      <soap:address location="http://localhost:3000/soap"/>
+    </port>
+  </service>
+</definitions>
